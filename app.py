@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify
-import hashlib
-import time
-from logging.config import dictConfig
-import ssl
-import os
 from dotenv import load_dotenv, dotenv_values 
+from flask import Flask, request, jsonify
+from logging.config import dictConfig
+import hashlib
+import os
+import ssl
+import time
 
 load_dotenv() 
 
@@ -34,13 +34,11 @@ dictConfig(
 
 app = Flask(__name__)
 
-# Generate SHA3 hash
 def generate_hash(salt, timestamp):
     return hashlib.sha3_256((salt + str(timestamp)).encode()).hexdigest()
 
 # Your custom action
-def perform_action():
-    # Perform the specific action you want here
+def perform_action(data):
     return "Action performed successfully!"
 
 def round_to_nearest_30s(ts):
@@ -52,16 +50,15 @@ def api_endpoint():
     data = request.get_json()
     
     if auth_header and data:
-        # Extract the token and timestamp from the request
+        # Extract the token from the request
         token = auth_header.split()[-1]
         timestamp = round_to_nearest_30s(int(time.time()))
-        # Generate the hash based on the salt and timestamp
+
         expected_token = generate_hash(SALT, timestamp)
         
-        # Check if the token matches and the timestamp is within an acceptable range (e.g., 30 seconds)
         if token == expected_token:
             # Token is valid, perform the action
-            result = perform_action()
+            result = perform_action(data)
             return jsonify({"message": result}), 200
         else:
             # Invalid token or timestamp
@@ -76,13 +73,11 @@ if __name__ == '__main__':
     cert_file = os.getenv('CERT_FILE')
     key_file = os.getenv('KEY_FILE')
 
-    # Check if both certificate and key files exist
     if os.path.exists(cert_file) and os.path.exists(key_file):
-        # Load SSL context
+        # Run with HTTPS
         context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
         context.load_cert_chain(cert_file, key_file)
         
-        # Run with HTTPS
         app.logger.debug('Running with SSL...')
         app.run(debug=True, host='0.0.0.0', port=PORT, ssl_context=context)
     else:
