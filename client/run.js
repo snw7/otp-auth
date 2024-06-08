@@ -8,8 +8,7 @@ const sha3_256 = importModule('js-sha3');
 
 const SALT = '<your-secret-salt>';
 
-const timestampA = Math.floor(Date.now() / 1000);
-const timestamp = Math.floor(timestampA / 30) * 30;
+const timestamp = Math.floor(Math.floor(Date.now() / 1000) / 30) * 30;
 
 function generateHash(salt, timestamp) {
     return sha3_256(salt + timestamp.toString());
