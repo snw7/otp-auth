@@ -23,4 +23,4 @@ This is a lightweight API that allows communication between iOS devices and a re
 ## License
 This project is written by snw7 and licensed under the MIT License.
 
-This project uses https://github.com/emn178/js-sha3. (c) Chen, Yi-Cyuan 2015-2018.
+This project uses https://github.com/emn178/js-sha3 &copy; Chen, Yi-Cyuan 2015-2018.
